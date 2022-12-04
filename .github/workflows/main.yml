@@ -1,0 +1,29 @@
+name: Buildm
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    # Run a job for each of the specified target architectures:
+    strategy:
+      matrix:
+        arch:
+          - win64
+          - win32
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+      - name: Build
+        run: |
+          nmake /f Makefile.vc CFG=release-static RTLIBCFG=static OBJDIR=output
+      # ...
