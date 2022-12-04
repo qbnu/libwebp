@@ -1,0 +1,34 @@
+name: Buildm
+
+on:
+  push:
+    branches: [ "forjpegview" ]
+  pull_request:
+    branches: [ "forjpegview" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    # Run a job for each of the specified target architectures:
+    strategy:
+      matrix:
+        arch:
+          - win64
+          - win32
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+      - name: Build
+        run: |
+          nmake /f Makefile.vc CFG=release-static RTLIBCFG=static OBJDIR=output
+      - name: Upload output
+        uses: actions/upload-artifact@v3
+        with:
+          name: releaselibwebp
+          path: output/release-static
+      # ...
