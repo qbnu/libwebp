@@ -26,4 +26,9 @@ jobs:
       - name: Build
         run: |
           nmake /f Makefile.vc CFG=release-static RTLIBCFG=static OBJDIR=output
+      - name: Upload output
+        uses: actions/upload-artifact@v3
+        with:
+          name: releaselibwebp
+          path: output/release-static
       # ...
